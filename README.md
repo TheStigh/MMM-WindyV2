@@ -3,7 +3,7 @@
 ### INTRODUCTION
 This is a module for [MagicMirror](https://github.com/MichMich/MagicMirror) that adds the [Windy](https://www.windy.com/) weather map and was originally written by santi4488 as [MMM-windy](https://github.com/santi4488/MMM-windy). This is a re-write that adds several new options, like adding your Lat & Lon to center on your location, setting zoom level and most importantly - adding the layer your prefer to see. You can choose from: wind, rain, clouds, temperature, pressure, currents and waves (free version).
 
-![alt text](https://github.com/TheStigh/MMM-WindyV2/windy.gif)
+![alt text](https://github.com/TheStigh/MMM-WindyV2/layer-wind.png)
 
 ### CONFIGURATION
 You will need to get your own API key which can be obtained [here](https://api4.windy.com/api-key).
