@@ -74,13 +74,13 @@ Module.register('MMM-WindyV2', {
       };
     windyInit( options, windyAPI => {
 
-        const {store} = windyAPI;									// All the params are stored in windyAPI.store
+        const {store} = windyAPI;
 		var overlay = store.get('overlay');
 		var allowedOverlays = store.getAllowed('overlay');
 		store.set('overlay',this.config.showLayer);
 		store.on('overlay', ovr => {
 		// Message will be emited only if value is valid and actually changed
-		console.log('Wow, overlay has been chnaged to', ovr)
+		// console.log('Wow, overlay has been chnaged to', ovr)
 		});
     });
     }, delay);
