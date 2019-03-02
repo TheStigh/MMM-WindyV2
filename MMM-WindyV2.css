@@ -1,0 +1,29 @@
+body {
+  pointer-events: none;
+  background: rgba(0, 0, 0, 0);
+}
+
+.region.fullscreen.above .container,
+.region.fullscreen.above .container .module,
+.region.fullscreen.above .container .module .module-content,
+.region.fullscreen.above .container .module .module-content div,
+.module-content #windy {
+  height: 100%;
+}
+
+.region.fullscreen.above .container .module {
+  margin-bottom: 0;
+}
+
+.region.fullscreen.above {
+  z-index: -1;
+}
+
+#windy #bottom {
+ display: none;
+ margin-right:10px
+}
+
+#windy #embed-zoom .zoom-ctrl {
+ display: none;
+}
