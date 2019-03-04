@@ -22,7 +22,7 @@ To use the module, add the following to the modules array in your `config/config
 	      	latitude: YOUR LATITUDE,        // example: 69.123
 	        longitude: YOUR LONGITUDE,      // example: 17.123
 	        zoomLevel: 6,                   // set your preferred zoom level
-	        showLayer: 'rain'		// wind, rain, clouds, temp, pressure, currents, waves
+	        showLayer: 'rain',		// wind, rain, clouds, temp, pressure, currents, waves
 		rotateLayers: false,		// set to true to rotate layers
 		layersToRotate: ['wind','rain'],// layers to rotate
 		delayRotate: 5000		// delay between rotated layers, in milliseconds
