@@ -8,6 +8,12 @@ This is a module for [MagicMirror](https://github.com/MichMich/MagicMirror) that
 #### UPDATE 03.02.2019:
 - Added option for multiple layers to rotate with time interval
 
+#### UPDATE 06.02.2019:
+- Added support for voice control by MMM-VoiceControlMe
+	- Can change between overlays
+	- Can zoom in & out
+	- At certain zoom level you get streets rather than just colors
+	-- Commands for voice is at the bottom of this Readme
 
 ### CONFIGURATION
 You will need to get your own API key which can be obtained [here](https://api4.windy.com/api-key).
@@ -25,10 +31,22 @@ To use the module, add the following to the modules array in your `config/config
 	        showLayer: 'rain',		// wind, rain, clouds, temp, pressure, currents, waves
 		rotateLayers: false,		// set to true to rotate layers
 		layersToRotate: ['wind','rain'],// layers to rotate
-		delayRotate: 5000		// delay between rotated layers, in milliseconds
+		delayRotate: 5000,		// delay between rotated layers, in milliseconds
+		wMinZoom: 3,			// set minimum zoom level for WindyV2
+		wMaxZoom: 17			// set maximum zoom level for WindyV2
       }
 },
 ```
 
-### SOON TO BE RELEASED
-Can be controlled by your voice, which will depend on [MMM-VoiceControlMe](https://github.com/Mykle1/MMM-VoiceControlMe).
+### VOICE-CONTROL SUPPORTED
+You want to voice-control Windy, you say?
+Go to [MMM-VoiceControlMe](https://github.com/Mykle1/MMM-VoiceControlMe) and follow instructions to install.
+Commands to control MMM-WindyV2 are:
+- show me rain
+- show me temperature
+- show me pressure
+- show me currents
+- show me waves
+- show me wind
+- zoom in
+- zoom out
