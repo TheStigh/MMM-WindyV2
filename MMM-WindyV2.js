@@ -349,6 +349,57 @@ Module.register('MMM-WindyV2', {
 							});
 					map.setZoom(zLevel);
 				});
+			
+			} else if (notification === 'ROTATELAYER') {
+				const options = {key: this.config.apiKey};	
+					if (!window.copy_of_W) {
+						window.copy_of_W = Object.assign({}, window.W);
+						}
+						if (window.W.windyBoot) {
+						window.W = Object.assign({}, window.copy_of_W);
+						}		
+
+				windyInit (options, windyAPI => {
+						const {store,map} = windyAPI;
+						var overlays = this.config.layersToRotate;
+						var h = overlays.length;
+						h=h-1;
+						//
+						var i = 0;
+						setInterval( ()=> {
+							i = (i === h ? 0 : i + 1 ),
+							store.set('overlay', overlays[i]);
+							Log.info('<<<>>> Current showing Overlay: '+overlays);
+						}, this.config.delayRotate);
+					map.setZoom(this.config.zoomLevel);
+				});
+
+		} else if (notification === 'DEFAULTZOOM') {
+				const options = {key: this.config.apiKey};	
+					if (!window.copy_of_W) {
+						window.copy_of_W = Object.assign({}, window.W);
+						}
+						if (window.W.windyBoot) {
+						window.W = Object.assign({}, window.copy_of_W);
+						}		
+				windyInit (options, windyAPI => {
+						const {store,map} = windyAPI;
+						var topLayer = L.tileLayer('http://b.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+								attribution: 'Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, ',
+								minZoom: 12,
+								maxZoom: 18
+								}).addTo(map);
+						topLayer.setOpacity('0');
+
+						map.on('zoomend', function() {
+							if (map.getZoom() <= 12) {
+									topLayer.setOpacity('0');
+							} else {
+									topLayer.setOpacity('1');
+									}
+							});
+					map.setZoom(this.config.zoomLevel);
+				});		
 			}
     },
   
