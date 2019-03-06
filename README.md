@@ -42,7 +42,7 @@ To use the module, add the following to the modules array in your `config/config
 ```
 
 ### VOICE-CONTROL SUPPORTED
-You want to voice-control Windy, you say?
+You want to voice-control Windy, you say? 
 Go to [MMM-VoiceControlMe](https://github.com/Mykle1/MMM-VoiceControlMe) and follow instructions to install.
 Commands to control MMM-WindyV2 are:
 - show me rain
