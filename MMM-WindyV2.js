@@ -128,13 +128,14 @@ Module.register('MMM-WindyV2', {
 						const {store,map} = windyAPI;
 						var overlays = this.config.layersToRotate;
 						
-						//var elements = overlays.split(',');						// will be here to count elements inside 'overlays'
-						//Log.info('<<<>>> counted elements :'+elements.length);	// will be here to count elements inside 'overlays'
-
+						var h = overlays.length;
+						h=h-1;
+						
 						var i = 0;
 						setInterval( ()=> {
-							i = (i === 1 ? 0 : i + 1 ),								// will replace '1 ? 0' with counted 'elements ? 0'
+							i = (i === h ? 0 : i + 1 ),
 							store.set('overlay', overlays[i]);
+							Log.info('<<<>>> Current showing Overlay: '+overlays);
 						}, this.config.delayRotate);
 					}
 					
