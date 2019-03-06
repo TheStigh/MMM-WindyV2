@@ -1,7 +1,6 @@
 /**
  * @file MMM-WindyV2.js
  *
- * @author fewieden MMM-voice
  * @inspirationalModule MMM-windy
  * @re-written by @TheStigh
  *
@@ -9,8 +8,6 @@
  *
  * @see  https://github.com/Mykle1/MMM-VoiceControlMe
  */
-
-/* global Module Log MM */
 
 /**
  * @external MM 	  @see https://github.com/MichMich/MagicMirror/blob/master/js/main.js
@@ -24,14 +21,16 @@ Module.register('MMM-WindyV2', {
 
 	defaults: {
 		initLoadDelay: 50,
-		apiKey: '',							// insert your API key here
-		latitude: 69.23,					// latitude for center of map
-		longitude: 17.98,					// longitude for center of map
-		zoomLevel: 6,						// set zoom level of map
-		showLayer: 'wind',					// Supported layers in free API versions are: wind, rain, clouds, temp, pressure, currents, waves
-		rotateLayers: true,					// if set to 'true' it will rotate layers as specified in 'layersToRotate'
+		apiKey: '',												// insert your API key here
+		latitude: 69.23,									// latitude for center of map
+		longitude: 17.98,									// longitude for center of map
+		zoomLevel: 6,											// set zoom level of map
+		showLayer: 'wind',								// Supported layers in free API versions are: wind, rain, clouds, temp, pressure, currents, waves
+		rotateLayers: true,								// if set to 'true' it will rotate layers as specified in 'layersToRotate'
 		layersToRotate: ['wind','rain'],	// choose from wind, rain, clouds, temperature, pressure, currents, waves
-		delayRotate: 5000					// in milliseconds, default per 5 seconds
+		delayRotate: 5000,								// in milliseconds, default per 5 seconds
+		wMinZoom: 3,											// set minimum zoom level for WindyV2
+		wMaxZoom: 17											// set maximum zoom level for WindyV2
 	},
 
     voice: {
@@ -46,8 +45,6 @@ Module.register('MMM-WindyV2', {
             'SHOW WAVES'
 			]
 	},
-
-
 
 	getScripts: function() {
 		return [
@@ -72,7 +69,6 @@ Module.register('MMM-WindyV2', {
 		var mapDiv = document.createElement('div');
 		mapDiv.id = 'windy';
 		wrapper.appendChild(mapDiv);
-		//console.log(wrapper);
 
 		return wrapper;
 	},
@@ -107,69 +103,253 @@ Module.register('MMM-WindyV2', {
 		loadScripts(scripts);
 	},
 
-    notificationReceived(notification, payload, sender) {
-//        if (notification === 'ALL_MODULES_STARTED') {
-//            this.sendNotification('REGISTER_VOICE_MODULE', this.voice);
-//        
-//		} else if (notification === 'VOICE_WINDY' && sender.name === 'MMM-VoiceControlMe') {
-//            this.checkCommands(payload);
-//        
-//		} else if (notification === 'VOICE_MODE_CHANGED' && sender.name === 'MMM-VoiceControlMe' && payload.old === this.voice.mode) {
-//            this.updateDom(300);
-
-		if (notification === 'HELLO__MIRROR') {
-				const options = {
-				key: this.config.apiKey,
-				zoom: 2,
-				};			
-	
-			windyInit (options,windyAPI => {
-				const {store} = windyAPI;
-				var overlay = store.get('overlay');
-				store.set('overlay','rain');
-				//store.on('overlay', ovr => {});
-				});
-		this.updateDom(300);
-		Log.info('<<<>>> ConsoleLog message about HELLO MIRROR received')
-		}
-    },
-
-
 	scheduleInit: function(delay) {
 		setTimeout(() => {
-			const options = {
+		const options = {
 				graticule: false,
 				key: this.config.apiKey,
 				lat: this.config.latitude,
 				lon: this.config.longitude,
+				animate: false,
 				zoom: this.config.zoomLevel,
-						//map.setZoom(14);
-						//map.options.minZoom = 10;
+				minZoom: 3,
+				maxZoom: 18,
 			};
 
-		windyInit (options, windyAPI => {
-			if (this.config.rotateLayers) {
-				const {store,broadcast} = windyAPI;
-				var overlays = this.config.layersToRotate;
+			if (!window.copy_of_W) {
+				window.copy_of_W = Object.assign({}, window.W);
+				}
+				if (window.W.windyBoot) {
+				window.W = Object.assign({}, window.copy_of_W);
+				}
+
+				windyInit (options, windyAPI => {
+					if (this.config.rotateLayers) {
+						const {store,map} = windyAPI;
+						var overlays = this.config.layersToRotate;
+						
+						//var elements = overlays.split(',');						// will be here to count elements inside 'overlays'
+						//Log.info('<<<>>> counted elements :'+elements.length);	// will be here to count elements inside 'overlays'
+
+						var i = 0;
+						setInterval( ()=> {
+							i = (i === 1 ? 0 : i + 1 ),								// will replace '1 ? 0' with counted 'elements ? 0'
+							store.set('overlay', overlays[i]);
+						}, this.config.delayRotate);
+					}
+					
+					const {store,map} = windyAPI;
+					var overlay = store.get('overlay');
+					store.set('overlay',this.config.showLayer);
 				
-				//var elements = overlays.split(',');						// will be here to count elements inside 'overlays'
-				//Log.info('<<<>>> counted elements :'+elements.length);	// will be here to count elements inside 'overlays'
+					var topLayer = L.tileLayer('http://b.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+							attribution: 'Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, ',
+							minZoom: 12,
+							maxZoom: 17
+							}).addTo(map);
+					topLayer.setOpacity('0');
 
-				var i = 0;
-				setInterval( ()=> {
-					i = (i === 1 ? 0 : i + 1 ),								// will replace '1 ? 0' with counted 'elements ? 0'
-					store.set('overlay', overlays[i]);
-				}, this.config.delayRotate);
-			}
-
-			const {store} = windyAPI;
-			var overlay = store.get('overlay');
-			store.set('overlay',this.config.showLayer);
-			//store.on('overlay', ovr => {});
-			});
-		
+					map.on('zoomend', function() {
+							if (map.getZoom() >= 12) {
+									topLayer.setOpacity('1');
+							} else {
+									topLayer.setOpacity('0');
+							}
+					});
+					map.setZoom(this.config.zoomLevel);
+				});
 		}, delay);
 	},
+
+    notificationReceived(notification, payload, sender) {
+		if (notification === 'CHANGEWIND') {
+				const options = {key: this.config.apiKey};			
+					if (!window.copy_of_W) {
+						window.copy_of_W = Object.assign({}, window.W);
+						}
+						if (window.W.windyBoot) {
+						window.W = Object.assign({}, window.copy_of_W);
+						}
+				windyInit (options,windyAPI => {
+				const {store,map} = windyAPI;
+				var overlay = store.get('overlay');
+				store.set('overlay','wind');
+				});
+		
+		} else if (notification === 'CHANGERAIN') {
+				const options = {key: this.config.apiKey};			
+					if (!window.copy_of_W) {
+						window.copy_of_W = Object.assign({}, window.W);
+						}
+						if (window.W.windyBoot) {
+						window.W = Object.assign({}, window.copy_of_W);
+						}
+				windyInit (options,windyAPI => {
+				const {store,map} = windyAPI;
+				var overlay = store.get('overlay');
+				store.set('overlay','rain');
+				});
+		
+		} else if (notification === 'CHANGERAIN') {
+				const options = {key: this.config.apiKey};			
+					if (!window.copy_of_W) {
+						window.copy_of_W = Object.assign({}, window.W);
+						}
+						if (window.W.windyBoot) {
+						window.W = Object.assign({}, window.copy_of_W);
+						}
+				windyInit (options,windyAPI => {
+				const {store,map} = windyAPI;
+				var overlay = store.get('overlay');
+				store.set('overlay','rain');
+				});
+		
+		} else if (notification === 'CHANGECLOUDS') {
+				const options = {key: this.config.apiKey};			
+					if (!window.copy_of_W) {
+						window.copy_of_W = Object.assign({}, window.W);
+						}
+						if (window.W.windyBoot) {
+						window.W = Object.assign({}, window.copy_of_W);
+						}
+				windyInit (options,windyAPI => {
+				const {store,map} = windyAPI;
+				var overlay = store.get('overlay');
+				store.set('overlay','clouds');
+				});
+		
+		} else if (notification === 'CHANGETEMP') {
+				const options = {key: this.config.apiKey};			
+					if (!window.copy_of_W) {
+						window.copy_of_W = Object.assign({}, window.W);
+						}
+						if (window.W.windyBoot) {
+						window.W = Object.assign({}, window.copy_of_W);
+						}
+				windyInit (options,windyAPI => {
+				const {store,map} = windyAPI;
+				var overlay = store.get('overlay');
+				store.set('overlay','temp');
+				});
+		
+		} else if (notification === 'CHANGEPRESSURE') {
+				const options = {key: this.config.apiKey};			
+					if (!window.copy_of_W) {
+						window.copy_of_W = Object.assign({}, window.W);
+						}
+						if (window.W.windyBoot) {
+						window.W = Object.assign({}, window.copy_of_W);
+						}
+				windyInit (options,windyAPI => {
+				const {store,map} = windyAPI;
+				var overlay = store.get('overlay');
+				store.set('overlay','pressure');
+				});
+		
+		} else if (notification === 'CHANGECURRENTS') {
+				const options = {key: this.config.apiKey};
+					if (!window.copy_of_W) {
+						window.copy_of_W = Object.assign({}, window.W);
+						}
+						if (window.W.windyBoot) {
+						window.W = Object.assign({}, window.copy_of_W);
+						}			
+			windyInit (options,windyAPI => {
+				const {store,map} = windyAPI;
+				var overlay = store.get('overlay');
+				store.set('overlay','currents');
+				});
+		
+		} else if (notification === 'CHANGEWAVES') {
+				const options = {key: this.config.apiKey};	
+					if (!window.copy_of_W) {
+						window.copy_of_W = Object.assign({}, window.W);
+						}
+						if (window.W.windyBoot) {
+						window.W = Object.assign({}, window.copy_of_W);
+						}		
+			windyInit (options,windyAPI => {
+				const {store,map} = windyAPI;
+				var overlay = store.get('overlay');
+				store.set('overlay','waves');
+				});
+		
+		} else if (notification === 'ZOOMIN') {
+				const options = {key: this.config.apiKey};
+
+				var zLevel = W.map.getZoom();
+				zLevel = zLevel + 1;
+				if (zLevel > this.config.wMaxZoom) {
+						zLevel = zLevel - 1;
+						};
+
+				Log.info('<<<>>> Zoom Level is :'+W.map.getZoom());
+				Log.info('<<<>>> zLevel Level is :'+zLevel)
+
+				if (!window.copy_of_W) {
+						window.copy_of_W = Object.assign({}, window.W);
+						}
+						if (window.W.windyBoot) {
+						window.W = Object.assign({}, window.copy_of_W);
+						}
+			windyInit (options,windyAPI => {
+						const {store,map} = windyAPI;
+						W.map.options.maxZoom=18;
+						var topLayer = L.tileLayer('http://b.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+								attribution: 'Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, ',
+								minZoom: 12,
+								maxZoom: 18
+								}).addTo(map);
+						topLayer.setOpacity('0');
+
+						map.on('zoomend', function() {
+							if (map.getZoom() >= 12) {
+									topLayer.setOpacity('1');
+							} else {
+									topLayer.setOpacity('0');
+									}
+							});
+					map.setZoom(zLevel);
+				});
+		
+		} else if (notification === 'ZOOMOUT') {
+				const options = {key: this.config.apiKey};
+
+				var zLevel = W.map.getZoom();
+				zLevel = zLevel - 1;
+				if (zLevel < this.config.wMinZoom) {
+						zLevel = zLevel + 1;
+						};
+
+				Log.info('<<<>>> Zoom Level is :'+W.map.getZoom());
+				Log.info('<<<>>> zLevel Level is :'+zLevel)
+
+				if (!window.copy_of_W) {
+						window.copy_of_W = Object.assign({}, window.W);
+						}
+						if (window.W.windyBoot) {
+						window.W = Object.assign({}, window.copy_of_W);
+						}
+			windyInit (options,windyAPI => {
+						const {store,map} = windyAPI;
+						var topLayer = L.tileLayer('http://b.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+								attribution: 'Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, ',
+								minZoom: 12,
+								maxZoom: 18
+								}).addTo(map);
+						topLayer.setOpacity('0');
+
+						map.on('zoomend', function() {
+							if (map.getZoom() <= 12) {
+									topLayer.setOpacity('0');
+							} else {
+									topLayer.setOpacity('1');
+									}
+							});
+					map.setZoom(zLevel);
+				});
+			}
+    },
   
   getStyles: function() {
     return [
@@ -177,3 +357,4 @@ Module.register('MMM-WindyV2', {
     ];
   }
 })
+
