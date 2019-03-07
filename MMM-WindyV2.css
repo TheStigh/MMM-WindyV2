@@ -19,12 +19,25 @@ body {
   z-index: -1;
 }
 
-
-#windy #bottom {
- display: none;
- margin-right:10px
-}
-
 #windy #embed-zoom .zoom-ctrl {
- display: none;
-}
+  display: none;
+ }
+ 
+#windy #bottom .metric-legend {
+   position:relative;
+   left: 70%;
+   width:30%;
+   height: 20px;
+   display:inline-block;
+   line-height:1.5;
+   background-color:#7c7c7c;
+   white-space:nowrap;
+   font-size:12px;
+   box-shadow:4px 4px 14px 0 black;
+   border-radius: 20px;
+ 
+  }
+  
+#windy #bottom #progress-bar {
+   display:none
+  }

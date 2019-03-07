@@ -30,7 +30,8 @@ Module.register('MMM-WindyV2', {
 		layersToRotate: ['wind','rain'],	// choose from wind, rain, clouds, temperature, pressure, currents, waves
 		delayRotate: 5000,								// in milliseconds, default per 5 seconds
 		wMinZoom: 3,											// set minimum zoom level for WindyV2
-		wMaxZoom: 17											// set maximum zoom level for WindyV2
+		wMaxZoom: 17,											// set maximum zoom level for WindyV2
+		windyMetric: 'm/s'								// 'kt', 'bft', 'm/s', 'km/h' and 'mph'
 	},
 
     voice: {
@@ -102,7 +103,7 @@ Module.register('MMM-WindyV2', {
 		};
 		loadScripts(scripts);
 	},
-
+/////////////////////////////////////////////////////////////////////////////////////
 	scheduleInit: function(delay) {
 		setTimeout(() => {
 		const options = {
@@ -125,22 +126,25 @@ Module.register('MMM-WindyV2', {
 
 				windyInit (options, windyAPI => {
 					if (this.config.rotateLayers) {
-						const {store,map} = windyAPI;
-						var overlays = this.config.layersToRotate;
-						
-						var h = overlays.length;
+						const {store,map,overlays} = windyAPI;
+						var overlayers = this.config.layersToRotate;
+						var windMetric = overlays.wind.metric;
+						overlays.wind.setMetric(this.config.windyMetric);
+
+						var h = overlayers.length;
 						h=h-1;
 						
 						var i = 0;
 						setInterval( ()=> {
 							i = (i === h ? 0 : i + 1 ),
-							store.set('overlay', overlays[i]);
+							store.set('overlay', overlayers[i]);
 							Log.info('<<<>>> Current showing Overlay: '+overlays);
 						}, this.config.delayRotate);
 					}
 					
-					const {store,map} = windyAPI;
+					const {store,map,overlays} = windyAPI;
 					var overlay = store.get('overlay');
+					var windMetric = overlays.wind.metric;
 					store.set('overlay',this.config.showLayer);
 				
 					var topLayer = L.tileLayer('http://b.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -157,11 +161,13 @@ Module.register('MMM-WindyV2', {
 									topLayer.setOpacity('0');
 							}
 					});
+					overlays.wind.setMetric(this.config.windyMetric);
 					map.setZoom(this.config.zoomLevel);
 				});
 		}, delay);
 	},
 
+/////////////////////////////////////////////////////////////////////////////////////
     notificationReceived(notification, payload, sender) {
 		if (notification === 'CHANGEWIND') {
 				const options = {key: this.config.apiKey};			
@@ -172,11 +178,14 @@ Module.register('MMM-WindyV2', {
 						window.W = Object.assign({}, window.copy_of_W);
 						}
 				windyInit (options,windyAPI => {
-				const {store,map} = windyAPI;
+				const {store,map,overlays} = windyAPI;
 				var overlay = store.get('overlay');
+				var windMetric = overlays.wind.metric;
+				overlays.wind.setMetric('m/s');
 				store.set('overlay','wind');
 				});
-		
+
+/////////////////////////////////////////////////////////////////////////////////////
 		} else if (notification === 'CHANGERAIN') {
 				const options = {key: this.config.apiKey};			
 					if (!window.copy_of_W) {
@@ -191,6 +200,7 @@ Module.register('MMM-WindyV2', {
 				store.set('overlay','rain');
 				});
 		
+/////////////////////////////////////////////////////////////////////////////////////
 		} else if (notification === 'CHANGERAIN') {
 				const options = {key: this.config.apiKey};			
 					if (!window.copy_of_W) {
@@ -204,7 +214,8 @@ Module.register('MMM-WindyV2', {
 				var overlay = store.get('overlay');
 				store.set('overlay','rain');
 				});
-		
+
+/////////////////////////////////////////////////////////////////////////////////////
 		} else if (notification === 'CHANGECLOUDS') {
 				const options = {key: this.config.apiKey};			
 					if (!window.copy_of_W) {
@@ -218,7 +229,8 @@ Module.register('MMM-WindyV2', {
 				var overlay = store.get('overlay');
 				store.set('overlay','clouds');
 				});
-		
+
+/////////////////////////////////////////////////////////////////////////////////////
 		} else if (notification === 'CHANGETEMP') {
 				const options = {key: this.config.apiKey};			
 					if (!window.copy_of_W) {
@@ -233,6 +245,7 @@ Module.register('MMM-WindyV2', {
 				store.set('overlay','temp');
 				});
 		
+/////////////////////////////////////////////////////////////////////////////////////
 		} else if (notification === 'CHANGEPRESSURE') {
 				const options = {key: this.config.apiKey};			
 					if (!window.copy_of_W) {
@@ -246,7 +259,8 @@ Module.register('MMM-WindyV2', {
 				var overlay = store.get('overlay');
 				store.set('overlay','pressure');
 				});
-		
+
+/////////////////////////////////////////////////////////////////////////////////////
 		} else if (notification === 'CHANGECURRENTS') {
 				const options = {key: this.config.apiKey};
 					if (!window.copy_of_W) {
@@ -260,7 +274,8 @@ Module.register('MMM-WindyV2', {
 				var overlay = store.get('overlay');
 				store.set('overlay','currents');
 				});
-		
+
+/////////////////////////////////////////////////////////////////////////////////////
 		} else if (notification === 'CHANGEWAVES') {
 				const options = {key: this.config.apiKey};	
 					if (!window.copy_of_W) {
@@ -274,7 +289,8 @@ Module.register('MMM-WindyV2', {
 				var overlay = store.get('overlay');
 				store.set('overlay','waves');
 				});
-		
+
+/////////////////////////////////////////////////////////////////////////////////////
 		} else if (notification === 'ZOOMIN') {
 				const options = {key: this.config.apiKey};
 
@@ -312,7 +328,8 @@ Module.register('MMM-WindyV2', {
 							});
 					map.setZoom(zLevel);
 				});
-		
+				
+/////////////////////////////////////////////////////////////////////////////////////
 		} else if (notification === 'ZOOMOUT') {
 				const options = {key: this.config.apiKey};
 
