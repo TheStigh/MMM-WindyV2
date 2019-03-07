@@ -7,16 +7,23 @@ Enjoy!
 
 ![alt text](https://github.com/TheStigh/MMM-WindyV2/blob/master/windy.gif)
 
-#### UPDATE 03.02.2019:
+#### UPDATE 03.03.2019:
 - Added option for multiple layers to rotate with time interval
 
-#### UPDATE 06.02.2019:
+#### UPDATE 06.03.2019:
 - Added support for voice control by MMM-VoiceControlMe
 	- Can change between overlays
 	- Can zoom in & out
 	- At certain zoom level you get streets rather than just colors
+	
+#### UPDATE 07.03.2019:
+- Added css to show weatherscale data in lower right corner
+- Added support for different metrics
 
 ... commands for voice are at the bottom of this Readme
+
+### TO-DO:
+- Add support for voice control from MMM-AssistantMk2
 
 ### CONFIGURATION
 You will need to get your own API key which can be obtained [here](https://api4.windy.com/api-key).
@@ -36,7 +43,8 @@ To use the module, add the following to the modules array in your `config/config
 		layersToRotate: ['wind','rain'],// layers to rotate
 		delayRotate: 5000,		// delay between rotated layers, in milliseconds
 		wMinZoom: 3,			// set minimum zoom level for WindyV2
-		wMaxZoom: 17			// set maximum zoom level for WindyV2
+		wMaxZoom: 17,			// set maximum zoom level for WindyV2
+		windyMetric: 'm/s'		// 'kt', 'bft', 'm/s', 'km/h' and 'mph'
       }
 },
 ```
