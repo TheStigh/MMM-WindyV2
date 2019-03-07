@@ -16,7 +16,7 @@ Enjoy!
 	- Can zoom in & out
 	- At certain zoom level you get streets rather than just colors
 
-... commands for voice is at the bottom of this Readme
+... commands for voice are at the bottom of this Readme
 
 ### CONFIGURATION
 You will need to get your own API key which can be obtained [here](https://api4.windy.com/api-key).
@@ -53,3 +53,5 @@ Commands to control MMM-WindyV2 are:
 - show me wind
 - zoom in
 - zoom out
+- Show default zoom	// shortcut to go back to default zoom
+- Rotate layer		// start the rotation if set to true and changed zoom level
