@@ -20,24 +20,56 @@ body {
 }
 
 #windy #embed-zoom .zoom-ctrl {
-  display: none;
- }
+ display: none;
+}
+
+#windy #bottom div {
+  margin-right: 320px;
+  height: 20px;
+}
+
+#windy #bottom #progress-bar #playpause {
+  display:none; 
+}
+
+#windy #bottom.shy.left-border.right-border .metric-legend {
+  position:absolute;
+  left: 70%;
+  width:30%;
+  height: 20px;
+  display:inline-block;
+  line-height:1.5;
+  background-color:#7c7c7c;
+  white-space:nowrap;
+  font-size:12px;
+  box-shadow:4px 4px 14px 0 black;
+  border-radius: 20px;
+  bottom: 20px;
+}
  
-#windy #bottom .metric-legend {
-   position:relative;
-   left: 70%;
-   width:30%;
-   height: 20px;
-   display:inline-block;
-   line-height:1.5;
-   background-color:#7c7c7c;
-   white-space:nowrap;
-   font-size:12px;
-   box-shadow:4px 4px 14px 0 black;
-   border-radius: 20px;
- 
-  }
-  
-#windy #bottom #progress-bar {
-   display:none
-  }
+ #windy #bottom.shy.left-border.right-border #progress-bar  {
+  position:absolute;
+  display:inline-block;
+  height: 66px;
+  width: 100%;
+  border-radius: 6px;
+  left: 0px;
+}
+
+#windy #bottom.shy.left-border #progress-bar #calendar {
+  display: inline-block;
+  box-sizing: border-box;
+  text-align: left;
+  padding: 6px 0 0 8px;
+  font-size: 12px;
+  line-height: 1;
+  height: 26px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+#windy .uiyellow {
+  text-shadow: 0 0 4px black;
+  color: #fff3e1;
+}
+
