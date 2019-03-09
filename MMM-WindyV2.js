@@ -17,6 +17,8 @@
  * @requires MM
  */
 
+var currentZoom
+
 Module.register('MMM-WindyV2', {
 
 	defaults: {
@@ -31,7 +33,8 @@ Module.register('MMM-WindyV2', {
 		delayRotate: 5000,								// in milliseconds, default per 5 seconds
 		wMinZoom: 3,											// set minimum zoom level for WindyV2
 		wMaxZoom: 17,											// set maximum zoom level for WindyV2
-		windyMetric: 'm/s'								// 'kt', 'bft', 'm/s', 'km/h' and 'mph'
+		windyMetric: 'm/s',								// 'kt', 'bft', 'm/s', 'km/h' and 'mph'
+		updateTimer: 3600000							// update per hour
 	},
 
     voice: {
@@ -77,6 +80,14 @@ Module.register('MMM-WindyV2', {
 	start: function() {
 		let self = this;
 		Log.info('Starting module: ' + this.name);
+
+		currentZoom = this.config.zoomLevel;
+
+		setInterval(function() {
+				self.updateDom();
+				self.scheduleInit(self.config.initLoadDelay);
+		}, this.config.updateTimer);
+
 		self.loaded = false;
 		var scripts = [
 			'https://api4.windy.com/assets/libBoot.js'
@@ -143,10 +154,10 @@ Module.register('MMM-WindyV2', {
 					}
 					
 					const {store,map,overlays} = windyAPI;
-					var overlay = store.get('overlay');
+					//var overlay = store.get('overlay');
 					var windMetric = overlays.wind.metric;
 					store.set('overlay',this.config.showLayer);
-				
+									
 					var topLayer = L.tileLayer('http://b.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 							attribution: 'Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, ',
 							minZoom: 12,
@@ -162,7 +173,7 @@ Module.register('MMM-WindyV2', {
 							}
 					});
 					overlays.wind.setMetric(this.config.windyMetric);
-					map.setZoom(this.config.zoomLevel);
+					map.setZoom(currentZoom);
 				});
 		}, delay);
 	},
@@ -327,8 +338,9 @@ Module.register('MMM-WindyV2', {
 									}
 							});
 					map.setZoom(zLevel);
+					currentZoom = zLevel;
 				});
-				
+
 /////////////////////////////////////////////////////////////////////////////////////
 		} else if (notification === 'ZOOMOUT') {
 				const options = {key: this.config.apiKey};
@@ -365,7 +377,10 @@ Module.register('MMM-WindyV2', {
 									}
 							});
 					map.setZoom(zLevel);
+					currentZoom=zLevel;
 				});
+
+/////////////////////////////////////////////////////////////////////////////////////			
 			
 			} else if (notification === 'ROTATELAYER') {
 				const options = {key: this.config.apiKey};	
@@ -391,7 +406,9 @@ Module.register('MMM-WindyV2', {
 					map.setZoom(this.config.zoomLevel);
 				});
 
-		} else if (notification === 'DEFAULTZOOM') {
+/////////////////////////////////////////////////////////////////////////////////////
+		
+			} else if (notification === 'DEFAULTZOOM') {
 				const options = {key: this.config.apiKey};	
 					if (!window.copy_of_W) {
 						window.copy_of_W = Object.assign({}, window.W);
@@ -416,8 +433,14 @@ Module.register('MMM-WindyV2', {
 									}
 							});
 					map.setZoom(this.config.zoomLevel);
+					currentZoom = this.config.zoomLevel;
 				});		
-			}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+			} else if (notification === 'PLAYANIMATION') {
+				document.getElementById('playpause').click();
+				}
     },
   
   getStyles: function() {
