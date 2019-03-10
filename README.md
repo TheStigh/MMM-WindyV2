@@ -20,6 +20,11 @@ Enjoy!
 - Added css to show weatherscale data in lower right corner
 - Added support for different metrics
 
+#### UPDATE 09.03.2019:
+- Added support for play weather animation by voice control
+- CSS cleanups
+- Bugfixes
+
 ... commands for voice are at the bottom of this Readme
 
 ### TO-DO:
@@ -31,20 +36,21 @@ To use the module, add the following to the modules array in your `config/config
 ```
 {
 	  module: "MMM-WindyV2",
-	  position: 'fullscreen_above',         // this must be set to 'fullscreen_above'
+	  position: 'fullscreen_above',          // this must be set to 'fullscreen_above'
 	    config: {
-		apiKey: 'YOUR API KEY',		// insert your free or paid API key here
-        	initLoadDelay: 50,              // optional, default is 50 milliseconds
-	      	latitude: YOUR LATITUDE,        // example: 69.123
-	        longitude: YOUR LONGITUDE,      // example: 17.123
-	        zoomLevel: 6,                   // set your preferred zoom level
-	        showLayer: 'rain',		// wind, rain, clouds, temp, pressure, currents, waves
-		rotateLayers: false,		// set to true to rotate layers
-		layersToRotate: ['wind','rain'],// layers to rotate
-		delayRotate: 5000,		// delay between rotated layers, in milliseconds
-		wMinZoom: 3,			// set minimum zoom level for WindyV2
-		wMaxZoom: 17,			// set maximum zoom level for WindyV2
-		windyMetric: 'm/s'		// 'kt', 'bft', 'm/s', 'km/h' and 'mph'
+		apiKey: 'YOUR API KEY',		 // insert your free or paid API key here
+        	initLoadDelay: 50,               // optional, default is 50 milliseconds
+	      	latitude: YOUR LATITUDE,         // example: 69.123
+	        longitude: YOUR LONGITUDE,       // example: 17.123
+	        zoomLevel: 6,                    // set your preferred zoom level
+	        showLayer: 'rain',		 // wind, rain, clouds, temp, pressure, currents, waves
+		rotateLayers: false,		 // set to true to rotate layers
+		layersToRotate: ['wind','rain'], // layers to rotate
+		delayRotate: 5000,		 // delay between rotated layers, in milliseconds
+		wMinZoom: 3,			 // set minimum zoom level for WindyV2
+		wMaxZoom: 17,			 // set maximum zoom level for WindyV2
+		windyMetric: 'm/s',		 // 'kt', 'bft', 'm/s', 'km/h' and 'mph'
+		updateTimer: 60 * 60 * 1000 * 6	 // update per 6 hours
       }
 },
 ```
@@ -61,5 +67,7 @@ Commands to control MMM-WindyV2 are:
 - show me wind
 - zoom in
 - zoom out
-- Show default zoom	// shortcut to go back to default zoom
+- Show default zoom	// shortcut to go back to default zoom from config.js
 - Rotate layer		// start the rotation if set to true and changed zoom level
+- Play animation        
+- Cancel animation
