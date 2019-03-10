@@ -34,7 +34,7 @@ Module.register('MMM-WindyV2', {
 		wMinZoom: 3,											// set minimum zoom level for WindyV2
 		wMaxZoom: 17,											// set maximum zoom level for WindyV2
 		windyMetric: 'm/s',								// 'kt', 'bft', 'm/s', 'km/h' and 'mph'
-		updateTimer: 3600000							// update per hour
+		updateTimer: 60 * 60 * 1000 * 6		// update per 6 hours
 	},
 
     voice: {
@@ -440,7 +440,13 @@ Module.register('MMM-WindyV2', {
 
 			} else if (notification === 'PLAYANIMATION') {
 				document.getElementById('playpause').click();
-				}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+			} else if (notification === 'CANCELANIMATION') {
+				document.getElementById('playpause').click();	
+			}
+
     },
   
   getStyles: function() {
