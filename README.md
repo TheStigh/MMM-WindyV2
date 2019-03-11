@@ -22,6 +22,7 @@ Enjoy!
 
 #### UPDATE 09.03.2019:
 - Added support for play weather animation by voice control
+- Added support for retaining zoom level between changing layers
 - CSS cleanups
 - Bugfixes
 
@@ -50,7 +51,8 @@ To use the module, add the following to the modules array in your `config/config
 		wMinZoom: 3,			 // set minimum zoom level for WindyV2
 		wMaxZoom: 17,			 // set maximum zoom level for WindyV2
 		windyMetric: 'm/s',		 // 'kt', 'bft', 'm/s', 'km/h' and 'mph'
-		updateTimer: 60 * 60 * 1000 * 6	 // update per 6 hours
+		updateTimer: 60 * 60 * 1000 * 6, // update per 6 hours
+		retainZoom: true		 // retain zoomlevel between changing overlays
       }
 },
 ```
