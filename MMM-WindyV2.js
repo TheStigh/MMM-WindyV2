@@ -28,13 +28,14 @@ Module.register('MMM-WindyV2', {
 		longitude: 17.98,									// longitude for center of map
 		zoomLevel: 6,											// set zoom level of map
 		showLayer: 'wind',								// Supported layers in free API versions are: wind, rain, clouds, temp, pressure, currents, waves
-		rotateLayers: true,								// if set to 'true' it will rotate layers as specified in 'layersToRotate'
+		rotateLayers: false,							// if set to 'true' it will rotate layers as specified in 'layersToRotate'
 		layersToRotate: ['wind','rain'],	// choose from wind, rain, clouds, temperature, pressure, currents, waves
 		delayRotate: 5000,								// in milliseconds, default per 5 seconds
 		wMinZoom: 3,											// set minimum zoom level for WindyV2
 		wMaxZoom: 17,											// set maximum zoom level for WindyV2
 		windyMetric: 'm/s',								// 'kt', 'bft', 'm/s', 'km/h' and 'mph'
-		updateTimer: 60 * 60 * 1000 * 6		// update per 6 hours
+		updateTimer: 60 * 60 * 1000 * 6,	// update per 6 hours
+		retainZoom: true									// retain zoomlevel between changing overlays
 	},
 
     voice: {
@@ -189,8 +190,10 @@ Module.register('MMM-WindyV2', {
 						window.W = Object.assign({}, window.copy_of_W);
 						}
 				windyInit (options,windyAPI => {
-				const {store,map,overlays} = windyAPI;
-				var overlay = store.get('overlay');
+				const {store,map} = windyAPI;
+					if (this.config.retainZoom) {
+						map.setZoom(currentZoom);
+					}
 				var windMetric = overlays.wind.metric;
 				overlays.wind.setMetric('m/s');
 				store.set('overlay','wind');
@@ -207,7 +210,10 @@ Module.register('MMM-WindyV2', {
 						}
 				windyInit (options,windyAPI => {
 				const {store,map} = windyAPI;
-				var overlay = store.get('overlay');
+					if (this.config.retainZoom) {
+						map.setZoom(currentZoom);
+					}
+					//var overlay = store.get('overlay');
 				store.set('overlay','rain');
 				});
 		
@@ -222,7 +228,9 @@ Module.register('MMM-WindyV2', {
 						}
 				windyInit (options,windyAPI => {
 				const {store,map} = windyAPI;
-				var overlay = store.get('overlay');
+					if (this.config.retainZoom) {
+						map.setZoom(currentZoom);
+					}
 				store.set('overlay','rain');
 				});
 
@@ -237,7 +245,9 @@ Module.register('MMM-WindyV2', {
 						}
 				windyInit (options,windyAPI => {
 				const {store,map} = windyAPI;
-				var overlay = store.get('overlay');
+					if (this.config.retainZoom) {
+						map.setZoom(currentZoom);
+					}
 				store.set('overlay','clouds');
 				});
 
@@ -252,7 +262,9 @@ Module.register('MMM-WindyV2', {
 						}
 				windyInit (options,windyAPI => {
 				const {store,map} = windyAPI;
-				var overlay = store.get('overlay');
+					if (this.config.retainZoom) {
+						map.setZoom(currentZoom);
+					}
 				store.set('overlay','temp');
 				});
 		
@@ -267,7 +279,9 @@ Module.register('MMM-WindyV2', {
 						}
 				windyInit (options,windyAPI => {
 				const {store,map} = windyAPI;
-				var overlay = store.get('overlay');
+					if (this.config.retainZoom) {
+						map.setZoom(currentZoom);
+					}
 				store.set('overlay','pressure');
 				});
 
@@ -282,7 +296,9 @@ Module.register('MMM-WindyV2', {
 						}			
 			windyInit (options,windyAPI => {
 				const {store,map} = windyAPI;
-				var overlay = store.get('overlay');
+					if (this.config.retainZoom) {
+						map.setZoom(currentZoom);
+					}
 				store.set('overlay','currents');
 				});
 
@@ -297,7 +313,9 @@ Module.register('MMM-WindyV2', {
 						}		
 			windyInit (options,windyAPI => {
 				const {store,map} = windyAPI;
-				var overlay = store.get('overlay');
+					if (this.config.retainZoom) {
+						map.setZoom(currentZoom);
+					}
 				store.set('overlay','waves');
 				});
 
